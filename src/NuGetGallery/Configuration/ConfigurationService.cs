@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
-using Microsoft.WindowsAzure.ServiceRuntime;
+//using Microsoft.WindowsAzure.ServiceRuntime;
 using NuGet.Services.KeyVault;
 using NuGetGallery.Configuration.SecretReader;
 
@@ -179,11 +179,11 @@ namespace NuGetGallery.Configuration
             string value = null;
             try
             {
-                if (RoleEnvironment.IsAvailable)
-                {
-                    value = RoleEnvironment.GetConfigurationSettingValue(settingName);
-                }
-                else
+                //if (RoleEnvironment.IsAvailable)
+                //{
+                //    value = RoleEnvironment.GetConfigurationSettingValue(settingName);
+                //}
+                //else
                 {
                     _notInCloud = true;
                 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.WindowsAzure.ServiceRuntime;
+//using Microsoft.WindowsAzure.ServiceRuntime;
 
 namespace NuGetGallery.Helpers
 {
@@ -21,11 +21,11 @@ namespace NuGetGallery.Helpers
         {
             try
             {
-                if (RoleEnvironment.IsAvailable)
-                {
-                    return RoleEnvironment.CurrentRoleInstance.Id;
-                }
-                else
+                //if (RoleEnvironment.IsAvailable)
+                //{
+                //    return RoleEnvironment.CurrentRoleInstance.Id;
+                //}
+                //else
                 {
                     return Environment.MachineName;
                 }
