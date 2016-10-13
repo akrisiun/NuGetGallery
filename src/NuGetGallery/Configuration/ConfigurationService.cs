@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
-//using Microsoft.WindowsAzure.ServiceRuntime;
+// using Microsoft.WindowsAzure.ServiceRuntime;
 using NuGet.Services.KeyVault;
 using NuGetGallery.Configuration.SecretReader;
 
@@ -33,7 +33,7 @@ namespace NuGetGallery.Configuration
         {
             if (secretReaderFactory == null)
             {
-                throw new ArgumentNullException(nameof(secretReaderFactory));
+                throw new ArgumentNullException("secretReaderFactory");
             }
 
             _secretReaderFactory = secretReaderFactory;
@@ -177,27 +177,27 @@ namespace NuGetGallery.Configuration
             }
 
             string value = null;
-            try
-            {
-                //if (RoleEnvironment.IsAvailable)
-                //{
-                //    value = RoleEnvironment.GetConfigurationSettingValue(settingName);
-                //}
-                //else
-                {
-                    _notInCloud = true;
-                }
-            }
-            catch (TypeInitializationException)
-            {
+            //try
+            //{
+            //    if (RoleEnvironment.IsAvailable)
+            //    {
+            //        value = RoleEnvironment.GetConfigurationSettingValue(settingName);
+            //    }
+            //    else
+            //    {
+            //        _notInCloud = true;
+            //    }
+            //}
+            //catch (TypeInitializationException)
+            //{
                 // Not in the role environment...
                 _notInCloud = true; // Skip future checks to save perf
-            }
-            catch (Exception)
-            {
-                // Value not present
-                return null;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    // Value not present
+            //    return null;
+            //}
             return value;
         }
 

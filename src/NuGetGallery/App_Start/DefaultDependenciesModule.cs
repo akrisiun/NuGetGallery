@@ -22,6 +22,7 @@ using NuGetGallery.Infrastructure;
 using NuGetGallery.Infrastructure.Lucene;
 using NuGetGallery.Areas.Admin.Models;
 using NuGetGallery.Configuration.SecretReader;
+using NuGetGallery.Infrastructure.Authentication;
 
 namespace NuGetGallery
 {
@@ -55,24 +56,27 @@ namespace NuGetGallery
                .AsSelf()
                .As<FeatureConfiguration>();
 
+            builder.RegisterType<CredentialBuilder>().As<ICredentialBuilder>().SingleInstance();
+            builder.RegisterType<CredentialValidator>().As<ICredentialValidator>().SingleInstance();
+
             builder.RegisterInstance(LuceneCommon.GetDirectory(configuration.Current.LuceneIndexLocation))
                 .As<Lucene.Net.Store.Directory>()
                 .SingleInstance();
 
             ConfigureSearch(builder, configuration);
 
-            if (!string.IsNullOrEmpty(configuration.Current.AzureStorageConnectionString))
-            {
-                builder.RegisterInstance(new TableErrorLog(configuration.Current.AzureStorageConnectionString))
-                    .As<ErrorLog>()
-                    .SingleInstance();
-            }
-            else
-            {
+            //if (!string.IsNullOrEmpty(configuration.Current.AzureStorageConnectionString))
+            //{
+            //    builder.RegisterInstance(new TableErrorLog(configuration.Current.AzureStorageConnectionString))
+            //        .As<ErrorLog>()
+            //        .SingleInstance();
+            //}
+            //else
+            //{
                 builder.RegisterInstance(new SqlErrorLog(configuration.Current.SqlConnectionString))
                     .As<ErrorLog>()
                     .SingleInstance();
-            }
+            //}
 
             builder.RegisterType<HttpContextCacheService>()
                 .AsSelf()
@@ -247,16 +251,17 @@ namespace NuGetGallery
                 .As<IPrincipal>()
                 .InstancePerLifetimeScope();
 
-            switch (configuration.Current.StorageType)
-            {
-                case StorageType.FileSystem:
-                case StorageType.NotSpecified:
+            //switch (
+            configuration.Current.StorageType = StorageType.FileSystem;
+            //{
+            //    case StorageType.FileSystem:
+            //    case StorageType.NotSpecified:
                     ConfigureForLocalFileSystem(builder, configuration);
-                    break;
-                case StorageType.AzureStorage:
-                    ConfigureForAzureStorage(builder, configuration);
-                    break;
-            }
+                    //break;
+                //case StorageType.AzureStorage:
+                //    ConfigureForAzureStorage(builder, configuration);
+                //    break;
+            //}
 
             builder.RegisterType<FileSystemService>()
                 .AsSelf()
@@ -378,59 +383,59 @@ namespace NuGetGallery
                 .InstancePerLifetimeScope();
         }
 
-        private static void ConfigureForAzureStorage(ContainerBuilder builder, IGalleryConfigurationService configuration)
-        {
-            builder.RegisterInstance(new CloudBlobClientWrapper(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
-                .AsSelf()
-                .As<ICloudBlobClient>()
-                .SingleInstance();
+        //private static void ConfigureForAzureStorage(ContainerBuilder builder, IGalleryConfigurationService configuration)
+        //{
+        //    builder.RegisterInstance(new CloudBlobClientWrapper(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
+        //        .AsSelf()
+        //        .As<ICloudBlobClient>()
+        //        .SingleInstance();
 
-            builder.RegisterType<CloudBlobFileStorageService>()
-                .AsSelf()
-                .As<IFileStorageService>()
-                .SingleInstance();
+        //    builder.RegisterType<CloudBlobFileStorageService>()
+        //        .AsSelf()
+        //        .As<IFileStorageService>()
+        //        .SingleInstance();
 
-            // when running on Windows Azure, we use a back-end job to calculate stats totals and store in the blobs
-            builder.RegisterInstance(new JsonAggregateStatsService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
-                .AsSelf()
-                .As<IAggregateStatsService>()
-                .SingleInstance();
+        //    // when running on Windows Azure, we use a back-end job to calculate stats totals and store in the blobs
+        //    builder.RegisterInstance(new JsonAggregateStatsService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
+        //        .AsSelf()
+        //        .As<IAggregateStatsService>()
+        //        .SingleInstance();
 
-            // when running on Windows Azure, pull the statistics from the warehouse via storage
-            builder.RegisterInstance(new CloudReportService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
-                .AsSelf()
-                .As<IReportService>()
-                .SingleInstance();
+        //    // when running on Windows Azure, pull the statistics from the warehouse via storage
+        //    builder.RegisterInstance(new CloudReportService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant))
+        //        .AsSelf()
+        //        .As<IReportService>()
+        //        .SingleInstance();
 
-            // when running on Windows Azure, download counts come from the downloads.v1.json blob
-            var downloadCountService = new CloudDownloadCountService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant);
-            builder.RegisterInstance(downloadCountService)
-                .AsSelf()
-                .As<IDownloadCountService>()
-                .SingleInstance();
-            ObjectMaterializedInterception.AddInterceptor(new DownloadCountObjectMaterializedInterceptor(downloadCountService));
+        //    // when running on Windows Azure, download counts come from the downloads.v1.json blob
+        //    var downloadCountService = new CloudDownloadCountService(configuration.Current.AzureStorageConnectionString, configuration.Current.AzureStorageReadAccessGeoRedundant);
+        //    builder.RegisterInstance(downloadCountService)
+        //        .AsSelf()
+        //        .As<IDownloadCountService>()
+        //        .SingleInstance();
+        //    ObjectMaterializedInterception.AddInterceptor(new DownloadCountObjectMaterializedInterceptor(downloadCountService));
 
-            builder.RegisterType<JsonStatisticsService>()
-                .AsSelf()
-                .As<IStatisticsService>()
-                .SingleInstance();
+        //    builder.RegisterType<JsonStatisticsService>()
+        //        .AsSelf()
+        //        .As<IStatisticsService>()
+        //        .SingleInstance();
 
-            string instanceId;
-            try
-            {
-                //instanceId = RoleEnvironment.CurrentRoleInstance.Id;
-            }
-            catch
-            {
-                instanceId = Environment.MachineName;
-            }
+        //    string instanceId;
+        //    //try
+        //    //{
+        //    //    instanceId = RoleEnvironment.CurrentRoleInstance.Id;
+        //    //}
+        //    //catch
+        //    //{
+        //    //    instanceId = Environment.MachineName;
+        //    //}
 
-            var localIp = AuditActor.GetLocalIP().Result;
+        //    var localIp = AuditActor.GetLocalIP().Result;
 
-            //builder.RegisterInstance(new CloudAuditingService(instanceId, localIp, configuration.Current.AzureStorageConnectionString, CloudAuditingService.GetAspNetOnBehalfOf))
-            //    .AsSelf()
-            //    .As<AuditingService>()
-            //    .SingleInstance();
-        }
+        //    builder.RegisterInstance(new CloudAuditingService(instanceId, localIp, configuration.Current.AzureStorageConnectionString, CloudAuditingService.GetAspNetOnBehalfOf))
+        //        .AsSelf()
+        //        .As<AuditingService>()
+        //        .SingleInstance();
+        //}
     }
 }

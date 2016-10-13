@@ -36,7 +36,7 @@ namespace NuGetGallery.Configuration
         /// <summary>
         /// Gets the connection string to use when connecting to azure storage
         /// </summary>
-        string AzureStorageConnectionString { get; set; }
+        //string AzureStorageConnectionString { get; set; }
 
         /// <summary>
         /// Gets a setting if Read Access Geo Redundant is enabled in azure storage
@@ -159,6 +159,16 @@ namespace NuGetGallery.Configuration
         /// Blank means any authentication provider can be used by administrators.
         /// </summary>
         string EnforcedAuthProviderForAdmin { get; set; }
+
+        /// <summary>
+        /// The required format for a user password.
+        /// </summary>
+        string UserPasswordRegex { get; set; }
+
+        /// <summary>
+        /// A message to show the user, to explain password requirements.
+        /// </summary>
+        string UserPasswordHint { get; set; }
 
         /// <summary>
         /// Defines the time after which V1 API keys expire.

@@ -35,19 +35,3 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyMetadata("RepositoryUrl", "https://www.github.com/NuGet/NuGetGallery")]
 
-
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-HEAD")]
-#if !PORTABLE
-[assembly: AssemblyMetadata("Branch", "HEAD")]
-[assembly: AssemblyMetadata("CommitId", "82d98a7")]
-[assembly: AssemblyMetadata("BuildDateUtc", "09/24/2016 12:00:06 +00:00")]
-#endif
-
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-master")]
-#if !PORTABLE
-[assembly: AssemblyMetadata("Branch", "master")]
-[assembly: AssemblyMetadata("CommitId", "0c64581")]
-[assembly: AssemblyMetadata("BuildDateUtc", "09/24/2016 12:24:05 +00:00")]
-#endif
